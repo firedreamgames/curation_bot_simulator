@@ -1,27 +1,28 @@
     steem.api.setOptions({
       url: 'https://api.steemit.com'
     });
-    var bots = ["postdoctor", "moneymatchgaming", "slimwhale", "boostbot", "honestbot", "ebargains", "lost-ninja", "estream.studios", "adriatik", "redwhale", "minnowhelper", "mrswhale", "foxyd", "mitsuko", "dailyupvotes", "lovejuice", "steembloggers", "booster", "megabot", "voterunner", "authors.league", "canalcrypto", "whalebuilder", "mercurybot", "msp-bidbot", "promobot", "upmewhale", "redlambo", "lrd", "lightningbolt", "sunrawhale", "upyou", "thebot", "onlyprofitbot", "pushbot", "flymehigh", "nado.bot", "seakraken", "spydo", "childfund", "minnowvotes", "dolphinbot", "upme", "upboater", "proffit", "bluebot", "brupvoter", "oceanwhale", "jerrybanfield", "luckyvotes", "minnowfairy", "estabond", "bodzila", "peace-bot", "appreciator", "discordia", "emperorofnaps", "zapzap", "cryptoempire", "bearwards", "alphaprime", "therising", "buildawhale", "aksdwi", "sleeplesswhale", "isotonic", "noicebot", "upgoater", "dlivepromoter", "upmyvote", "youtake", "smartsteem", "fishbaitbot", "rocky1", "shares", "boomerang", "brandonfrye", "postpromoter", "pushup", "singing.beauty", "edensgarden", "pwrup", "inciter", "chronocrypto", "allaz", "sneaky-ninja"];
+    // bot array from steembottracker
+	var bots = ["postdoctor", "moneymatchgaming", "slimwhale", "boostbot", "honestbot", "ebargains", "lost-ninja", "estream.studios", "adriatik", "redwhale", "minnowhelper", "mrswhale", "foxyd", "mitsuko", "dailyupvotes", "lovejuice", "steembloggers", "booster", "megabot", "voterunner", "authors.league", "canalcrypto", "whalebuilder", "mercurybot", "msp-bidbot", "promobot", "upmewhale", "redlambo", "lrd", "lightningbolt", "sunrawhale", "upyou", "thebot", "onlyprofitbot", "pushbot", "flymehigh", "nado.bot", "seakraken", "spydo", "childfund", "minnowvotes", "dolphinbot", "upme", "upboater", "proffit", "bluebot", "brupvoter", "oceanwhale", "jerrybanfield", "luckyvotes", "minnowfairy", "estabond", "bodzila", "peace-bot", "appreciator", "discordia", "emperorofnaps", "zapzap", "cryptoempire", "bearwards", "alphaprime", "therising", "buildawhale", "aksdwi", "sleeplesswhale", "isotonic", "noicebot", "upgoater", "dlivepromoter", "upmyvote", "youtake", "smartsteem", "fishbaitbot", "rocky1", "shares", "boomerang", "brandonfrye", "postpromoter", "pushup", "singing.beauty", "edensgarden", "pwrup", "inciter", "chronocrypto", "allaz", "sneaky-ninja"];
     var votetotal = 0;
     var percenttotal = 0;
     var curationtotal = 0;
     var cumeff = 0;
     var counter = 0;
     var feed;
-   
+    // Get the current feed-price. It will be used for SBD-Steem calculation
      steem.api.getFeedHistory(function(err, res) {
       feed = parseFloat(res.current_median_history.base);
 
     });
 	
 	
-
+// Initial function - Get the real-time transaction data from steem blockchain
     function search() {
 
 
       var release = steem.api.streamTransactions('head', function(err, result) {
 
-        if (result.operations["0"]["0"] == 'vote') {
+        if (result.operations["0"]["0"] == 'vote') { // This is to put a visual indicator that the bot is working.Vote selected for high transaction amount.
           document.getElementById("err_div").innerHTML = document.getElementById("err_div").innerHTML + ".";
           counter++;
           if (counter > 30) {
@@ -31,16 +32,16 @@
 
           }
         }
-
+		// check if the operation is a tranfer and if the receiver is a bot
         if ((result.operations["0"]["0"] == 'transfer') && (bots.includes(result.operations["0"]["1"].to))) {
           console.log(parseFloat(result.operations["0"]["1"].amount));
-          if (parseFloat(result.operations["0"]["1"].amount) >= 0.5) {
+          if (parseFloat(result.operations["0"]["1"].amount) >= 0.5) { // check if the amount is big enough.
 
             var amount = result.operations["0"]["1"].amount;
             var link = result.operations["0"]["1"].memo;
             var bid_bot = result.operations["0"]["1"].to;
             //console.log(amount,link);
-            get_post(amount, link);
+            get_post(amount, link);// send the transfer amount and post link to get the post data.
           }
         }
 
@@ -48,7 +49,7 @@
       });
 
     }
-
+	// function for calculating curation
     function get_post(amount, link) {
       var perm = link.split("/"); //split the url to get permlink and user
       var length_perm = perm.length;
@@ -59,47 +60,47 @@
       var ratio;
       steem.api.getContent(author, permlink, function(err, result) { // get values from steem.api for the post content
 
-        var pay_out = parseFloat(result.pending_payout_value);
-        var post_date = Date.parse(result.created);
+        var pay_out = parseFloat(result.pending_payout_value);// make pay-out float
+        var post_date = Date.parse(result.created);//make post date *timestamp*
         var now = new Date;
-        var utc_now = now.getTime() + now.getTimezoneOffset() * 60000;
-        var diff = (utc_now - post_date) / (60 * 1000);
-        var penalty = diff / 30;
-        if (penalty > 1) {
+        var utc_now = now.getTime() + now.getTimezoneOffset() * 60000;//convert now to UTC since post date is in UTC
+        var diff = (utc_now - post_date) / (60 * 1000);// find how old is the post * to use in calculation of time penalty*
+        var penalty = diff / 30; // find the difference from 30 mins
+        if (penalty > 1) {// if over 30 mins no extra bonus for the post
           penalty = 1;
         }
 
-        console.log("link: ", link);
-        console.log("time difference ", diff);
+        //console.log("link: ", link);
+        //console.log("time difference ", diff);
 
         var before = pay_out;
-        var bot_estimated = (parseFloat(amount) * 2.1);
+        var bot_estimated = (parseFloat(amount) * 2.1); // estimate that bot will pay 2.1 times the money sent as SBD
 
         if (before != 0) {
-          ratio = (Math.sqrt(bot_estimated) / Math.sqrt(before)) * penalty;
+          ratio = (Math.sqrt(bot_estimated) / Math.sqrt(before)) * penalty;// ratio for maximum efficiency ( this is for investigation )
         }
         if (before == 0) {
-          ratio = (Math.sqrt(bot_estimated) / 0.01) * penalty;
+          ratio = (Math.sqrt(bot_estimated) / 0.01) * penalty;// avoid division by zero error
         }
 
         var max_vote = parseFloat(document.getElementById("SBDinput").value);
-        var eff_vote = before / 6;
+        var eff_vote = before / 6; // maximum efficiency is calculated when vote is approximately 1/6 of previous votes
         if (eff_vote < 0.01) {
-          eff_vote = 0.01;
+          eff_vote = 0.01;// if efficient vote is calculated very small, use 0.01 SBD as vote value
         }
         if (eff_vote >= max_vote) {
-          eff_vote = max_vote;
+          eff_vote = max_vote; //if efficient vote is very big, use your max vote as value
 
         }
-        percentage = (eff_vote / max_vote) * 100
-        var curation = (eff_vote + before + bot_estimated) * 0.25;
+        percentage = (eff_vote / max_vote) * 100 // find % of vote to be sent
+        var curation = (eff_vote + before + bot_estimated) * 0.25; // calculate total future curation after bot vote
 
 
 
 
-        console.log("before:", before, "bot bid: ", bot_estimated, "ratio: ", ratio, "efficient vote: ", eff_vote, "percent vote: % ", percentage);
+       // console.log("before:", before, "bot bid: ", bot_estimated, "ratio: ", ratio, "efficient vote: ", eff_vote, "percent vote: % ", percentage);
 
-        write_div(before, bot_estimated, ratio, eff_vote, penalty, percentage, link, diff, curation);
+        write_div(before, bot_estimated, ratio, eff_vote, penalty, percentage, link, diff, curation);//send the data to write div
 
       });
 
@@ -107,12 +108,13 @@
 
     function write_div(before, bot_estimated, ratio, eff_vote, penalty, percentage, link, diff, curation) {
 
-
+	// calculate curation reward based on estimated total curation
       var curation_received = ((((Math.sqrt(eff_vote + before) - Math.sqrt(before)) / Math.sqrt(eff_vote + before + bot_estimated)))) * curation * penalty;
-      var efficiency = ((curation_received / eff_vote)) * 100;
-      console.log("efficiency: ", efficiency, "curation total :", curation, "curation received: ", curation_received);
+     // calculate efficiency based on received curation
+		var efficiency = ((curation_received / eff_vote)) * 100;
+      //console.log("efficiency: ", efficiency, "curation total :", curation, "curation received: ", curation_received);
 
-
+	// WRITE ALL THE CALCULATED DATA TO DIV'S
       var str = link;
       var lin1 = link.substring(0, 30);
       var lin2 = link.substring(0, 110);
@@ -155,14 +157,15 @@
 
     }
 	
+	// function for error proofing the input field
 	function check(){
 		var val=(document.getElementById("SBDinput").value);
 		if (val==""){
-			window.alert("Please enter your vote value at %100");
+			window.alert("Please enter your vote value at %100");// check if the user entered a value in text field
 					
 		}
 		if(val<=0){
-			window.alert("Vote value can't be zero or negative");
+			window.alert("Vote value can't be zero or negative");//check if the value is zero or negative
 		}
 		if((val!="")&&(val>0)){
 		search();
