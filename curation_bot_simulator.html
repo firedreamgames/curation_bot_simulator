@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Curation Bot Simulator</title>
+  <meta name="generator" content="Google Web Designer 3.0.1.0319">
+  <link rel="stylesheet" type="text/css" href="https://fdsteemtools.neocities.org/curation_bot_simulator/curation_bot_simulator.css">
+  <script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+  <script src="https://fdsteemtools.neocities.org/curation_bot_simulator/curation_bot_simulator.js"></script>
+  
+</head>
+
+<body class="htmlNoPages">
+  <h1 class="gwd-p-128p">Curator Bot Simulator</h1>
+  <p class="gwd-p-357q gwd-p-2lcn">Your vote at %100</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt">Link to post</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt gwd-p-1brm gwd-p-3caq">Post age</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt gwd-p-1brm gwd-p-bahn">Current votes total</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt gwd-p-1brm gwd-p-bahn gwd-p-ts72">Bot vote estimation</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt gwd-p-1brm gwd-p-bahn gwd-p-ts72 gwd-p-1ag2">Ratio</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt gwd-p-1brm gwd-p-bahn gwd-p-ts72 gwd-p-1ag2 gwd-p-1le3">Max Efficient Vote</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt gwd-p-1brm gwd-p-bahn gwd-p-ts72 gwd-p-1ag2 gwd-p-1le3 gwd-p-sh1p">Vote %</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt gwd-p-1brm gwd-p-bahn gwd-p-ts72 gwd-p-1ag2 gwd-p-1le3 gwd-p-sh1p gwd-p-l7aa">Curation to Earn</p>
+  <p class="gwd-p-357q gwd-p-2lcn gwd-p-vmrt gwd-p-1brm gwd-p-bahn gwd-p-ts72 gwd-p-1ag2 gwd-p-1le3 gwd-p-sh1p gwd-p-l7aa gwd-p-apsv">Efficiency</p>
+  <div class="gwd-div-1o0e" id="txtinput">
+    <input type="text" class="gwd-input-nn77" id="SBDinput">
+  </div>
+  <p class="gwd-span-1iir">*write your vote at %100 as seen at steemnow.com</p>
+  <p class="gwd-span-pbbq">SBD</p>
+  <div class="gwd-div-1e80 gwd-div-15ty" id="link"></div>
+  <div class="gwd-div-1e80 gwd-div-1i53 gwd-div-klbt" id="age"></div>
+  <div class="gwd-div-1e80 gwd-div-1i53 gwd-div-373k gwd-div-rtmb" id="before"></div>
+  <div class="gwd-div-1e80 gwd-div-1i53 gwd-div-373k gwd-div-14kv gwd-div-1m9n" id="botvote"></div>
+  <div class="gwd-div-1e80 gwd-div-1i53 gwd-div-373k gwd-div-14kv gwd-div-d5ww gwd-div-6nkz" id="ratio"></div>
+  <div class="gwd-div-1e80 gwd-div-1i53 gwd-div-373k gwd-div-14kv gwd-div-d5ww gwd-div-1y8z gwd-div-41nf" id="max_eff_vote"></div>
+  <div class="gwd-div-1e80 gwd-div-1i53 gwd-div-373k gwd-div-14kv gwd-div-d5ww gwd-div-1y8z gwd-div-ine8 gwd-div-1ekm" id="percent"></div>
+  <div class="gwd-div-1e80 gwd-div-1i53 gwd-div-373k gwd-div-14kv gwd-div-d5ww gwd-div-1y8z gwd-div-ine8 gwd-div-1byt gwd-div-i9wh" id="curation"></div>
+  <div class="gwd-div-1e80 gwd-div-1i53 gwd-div-373k gwd-div-14kv gwd-div-d5ww gwd-div-1y8z gwd-div-ine8 gwd-div-1byt gwd-div-1pvl" id="efficiency"></div>
+  <div class="gwd-div-yqgj" id="simulator">
+    <div class="gwd-div-yn8m gwd-div-q1v7" id="sim_link"></div>
+    <div class="gwd-div-yn8m gwd-div-q1v7 gwd-div-1fhe" id="sim_percent"></div>
+    <div class="gwd-div-yn8m gwd-div-q1v7 gwd-div-1fhe gwd-div-168q gwd-div-omrz" id="sim_vote"></div>
+    <div class="gwd-div-yn8m gwd-div-q1v7 gwd-div-1fhe gwd-div-168q gwd-div-1gtb gwd-div-qwg1" id="sim_curation"></div>
+    <div class="gwd-div-yn8m gwd-div-q1v7 gwd-div-1fhe gwd-div-168q gwd-div-1gtb gwd-div-6gqd" id="sim_efficiency"></div>
+  </div>
+  <div class="gwd-div-yn8m gwd-div-18od gwd-div-1v0l gwd-div-1cpd" id="h_percent">Used %</div>
+  <div class="gwd-div-yn8m gwd-div-18od gwd-div-1v0l gwd-div-1sbr gwd-div-171j" id="h_vote">Vote</div>
+  <div class="gwd-div-yn8m gwd-div-18od gwd-div-1v0l gwd-div-1sbr gwd-div-yzfg gwd-div-jqei" id="h_curation">Curation</div>
+  <div class="gwd-div-yn8m gwd-div-18od gwd-div-1v0l gwd-div-1sbr gwd-div-yzfg gwd-div-1laq" id="h_eff">Eff :</div>
+  <div class="gwd-div-yn8m gwd-div-18od gwd-div-12ll" id="h_link">Link</div>
+  <div class="gwd-div-fpuz" id="button_div">
+    <input id="Start" type="button" value=" Start Simulation " class="gwd-input-1ewu" onclick="check()">
+  </div>
+  <div class="gwd-div-14ib" id="err_div">Online</div>
+  <span class="gwd-span-jxjj">Votes Simulation if Efficency &gt; %100</span>
+</body>
+
+</html>
