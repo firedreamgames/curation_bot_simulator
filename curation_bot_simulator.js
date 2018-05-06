@@ -8,9 +8,7 @@
     var cumeff = 0;
     var counter = 0;
     var feed;
-    window.addEventListener('error', function(event) {
-      document.getElementById("err_div").innerHTML = "error";
-    })
+   
      steem.api.getFeedHistory(function(err, res) {
       feed = parseFloat(res.current_median_history.base);
 
